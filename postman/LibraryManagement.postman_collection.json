@@ -1,0 +1,554 @@
+﻿{
+  "info": {
+    "name": "Library Management System API",
+    "description": "Complete API collection for the Library Management System.\n\n## Authentication\nMost endpoints require a Bearer token. Use the Login request to authenticate, then set the `token` variable.\n\n## Default Credentials\n- admin / Password123 (Administrator)\n- librarian1 / Password123 (Librarian)\n- staff1 / Password123 (Staff)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5204"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('token', jsonData.token);",
+                  "pm.collectionVariables.set('refreshToken', jsonData.refreshToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "path": ["api", "auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Revoke Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/revoke",
+              "path": ["api", "auth", "revoke"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "Get All Books",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/books",
+              "path": ["api", "books"]
+            }
+          }
+        },
+        {
+          "name": "Get Book by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/books/1",
+              "path": ["api", "books", "1"]
+            }
+          }
+        },
+        {
+          "name": "Search Books",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/books/search?title=Foundation&author=Asimov&category=Science%20Fiction",
+              "path": ["api", "books", "search"],
+              "query": [
+                { "key": "title", "value": "Foundation" },
+                { "key": "author", "value": "Asimov" },
+                { "key": "category", "value": "Science Fiction" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Books by Status (In)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/books/status/In",
+              "path": ["api", "books", "status", "In"]
+            }
+          }
+        },
+        {
+          "name": "Get Books by Status (Out)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/books/status/Out",
+              "path": ["api", "books", "status", "Out"]
+            }
+          }
+        },
+        {
+          "name": "Create Book (Admin/Librarian)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isbn\": \"978-1234567890\",\n  \"title\": \"New Book Title\",\n  \"edition\": \"1st\",\n  \"publicationYear\": 2026,\n  \"summary\": \"A brand new book\",\n  \"pageCount\": 350,\n  \"language\": \"English\",\n  \"publisherId\": 1,\n  \"authorIds\": [1, 2],\n  \"categoryIds\": [1, 5]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/books",
+              "path": ["api", "books"]
+            }
+          }
+        },
+        {
+          "name": "Update Book (Admin/Librarian)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Book Title\",\n  \"summary\": \"Updated summary\",\n  \"status\": \"In\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/books/1",
+              "path": ["api", "books", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Book (Admin only)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/books/1",
+              "path": ["api", "books", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Members",
+      "item": [
+        {
+          "name": "Get All Members",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/members",
+              "path": ["api", "members"]
+            }
+          }
+        },
+        {
+          "name": "Get Member by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/members/1",
+              "path": ["api", "members", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Member Borrowings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/members/1/borrowings",
+              "path": ["api", "members", "1", "borrowings"]
+            }
+          }
+        },
+        {
+          "name": "Create Member (Admin/Librarian)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"email\": \"jane.doe@email.com\",\n  \"phone\": \"+1-555-0106\",\n  \"address\": \"789 New St, City, State\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/members",
+              "path": ["api", "members"]
+            }
+          }
+        },
+        {
+          "name": "Update Member (Admin/Librarian)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Updated\",\n  \"phone\": \"+1-555-9999\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/members/1",
+              "path": ["api", "members", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Member (Admin only)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/members/1",
+              "path": ["api", "members", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Borrowing",
+      "item": [
+        {
+          "name": "Get All Transactions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/borrowing",
+              "path": ["api", "borrowing"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Borrowings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/borrowing/active",
+              "path": ["api", "borrowing", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Transactions by Member",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/borrowing/member/1",
+              "path": ["api", "borrowing", "member", "1"]
+            }
+          }
+        },
+        {
+          "name": "Borrow Book (Admin/Librarian)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookId\": 1,\n  \"memberId\": 1,\n  \"borrowedById\": 2,\n  \"borrowDays\": 14,\n  \"notes\": \"First time borrower\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/borrowing/borrow",
+              "path": ["api", "borrowing", "borrow"]
+            }
+          }
+        },
+        {
+          "name": "Return Book (Admin/Librarian)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionId\": 1,\n  \"returnedById\": 2,\n  \"notes\": \"Returned in good condition\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/borrowing/return",
+              "path": ["api", "borrowing", "return"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users (Admin only)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/1",
+              "path": ["api", "users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get User Activity Logs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/1/activity",
+              "path": ["api", "users", "1", "activity"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newlibrarian\",\n  \"email\": \"newlibrarian@library.com\",\n  \"password\": \"Password123\",\n  \"fullName\": \"New Librarian\",\n  \"role\": \"Librarian\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Updated Name\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/1",
+              "path": ["api", "users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete (Deactivate) User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/5",
+              "path": ["api", "users", "5"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Supporting Resources",
+      "item": [
+        {
+          "name": "Get All Authors",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/authors",
+              "path": ["api", "authors"]
+            }
+          }
+        },
+        {
+          "name": "Create Author (Admin/Librarian)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Agatha\",\n  \"lastName\": \"Christie\",\n  \"biography\": \"English writer known for her detective novels\",\n  \"birthDate\": \"1890-09-15\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/authors",
+              "path": ["api", "authors"]
+            }
+          }
+        },
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Create Category (Admin/Librarian)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Horror\",\n  \"description\": \"Horror books\",\n  \"parentCategoryId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get All Publishers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/publishers",
+              "path": ["api", "publishers"]
+            }
+          }
+        },
+        {
+          "name": "Get Activity Logs (Admin only)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/activitylogs?count=10",
+              "path": ["api", "activitylogs"],
+              "query": [
+                { "key": "count", "value": "10" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
