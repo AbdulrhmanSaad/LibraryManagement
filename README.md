@@ -153,7 +153,6 @@ dotnet restore
 
 # 2. Create database
 sqlcmd -S localhost -i database/01_schema.sql
-sqlcmd -S localhost -d LibraryManagementDb -i database/02_seed_data.sql
 
 # 3. Update connection string in appsettings.json if needed
 #    Default: Server=localhost;Database=LibraryManagementDb;Trusted_Connection=True;
