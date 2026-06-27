@@ -1,0 +1,44 @@
+# .NET build outputs
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+packages/
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# Visual Studio
+.vs/
+*.opensdf
+*.csproj.user
+*.[Rr]esx
+*.dbmdl
+*.jfm
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# OS files
+Thumbs.db
+*.DS_Store
+Desktop.ini
+
+# Secrets / config overrides
+appsettings.*.local.json
+appsettings.*.Development.json
+secrets.json
+
+# Logs
+*.log
+logs/
